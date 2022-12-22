@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import allPosts from "../data/allPosts.json";
 import fetchUpdatedPosts from "../fetch/fetchUpdatedPosts";
 import sortPosts from "../utils/sortPosts";
@@ -13,7 +13,7 @@ function Blog({ signedIn }) {
     const posts = fetchUpdatedPosts();
     setUpdatedPosts(posts);
   };
-  const sortedPosts = sortPosts(updatedPosts);
+  const sortedPosts = useMemo(() => sortPosts(updatedPosts), [updatedPosts]);
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -24,7 +24,8 @@ function Blog({ signedIn }) {
 
   console.log("Rendering Blog component");
   return (
-    <div>
+    <div className="container">
+      <h1>Memoization in React</h1>
       <div>{localTime}</div>
       <button onClick={getLatestPosts}>Get Latest Post</button>
         <LatestPost signedIn={signedIn} post={sortedPosts[0]} />
@@ -33,4 +34,4 @@ function Blog({ signedIn }) {
   );
 }
 
-export default Blog;
+export default React.memo(Blog);
